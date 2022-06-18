@@ -1,7 +1,7 @@
 import java.io.*;
 import java.util.*;
 
-public class printAllPaths {
+public class hamiltonianPath {
    static class Edge {
       int src;
       int nbr;
@@ -14,19 +14,32 @@ public class printAllPaths {
       }
    }
 
-   public static void printAllPaths(ArrayList<Edge>[] graph , int src , int dest , boolean[] visited , String psf){
-      if(src == dest){
-         System.out.println(psf);
-         return;
-      }
-      visited[src] = true;
-      for(Edge edge : graph[src]){
-         if(visited[edge.nbr] == false){
-            printAllPaths(graph , edge.nbr , dest , visited , psf + edge.nbr);
-         }
-      }
-      visited[src] = false;
+   public static void hamiltonian(ArrayList<Edge>[] graph , int src , HashSet<Integer> visited , String psf , int osrc){
+       if(visited.size() == graph.length - 1){
+           System.out.print(psf);
+            boolean closingEdgeFound = false;
+            for(Edge e : graph[src]){
+                if(e.nbr == osrc){
+                    closingEdgeFound = true;
+                }
+            }
+            if(closingEdgeFound == true){
+                System.out.println("*");
+            }
+            else{
+                System.out.println(".");
+            }
+            return;
+       }
+       visited.add(src);
+       for(Edge edge : graph[src]){
+           if(visited.contains(edge.nbr) == false){
+               hamiltonian(graph , edge.nbr , visited , psf + edge.nbr , osrc);
+           }
+       }
+       visited.remove(src);
    }
+
 
    public static void main(String[] args) throws Exception {
       BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -48,11 +61,10 @@ public class printAllPaths {
       }
 
       int src = Integer.parseInt(br.readLine());
-      int dest = Integer.parseInt(br.readLine());
-
-      boolean[] visited = new boolean[vtces];
-
-      printAllPaths(graph , src , dest , visited , src + "");
+    
+      HashSet<Integer>visited = new HashSet<>();
+      hamiltonian(graph , src , visited , src + "" , src);
+       
    }
 
 

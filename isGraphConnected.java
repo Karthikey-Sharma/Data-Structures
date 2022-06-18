@@ -1,7 +1,7 @@
 import java.io.*;
 import java.util.*;
 
-public class printAllPaths {
+public class isGraphConnected {
    static class Edge {
       int src;
       int nbr;
@@ -14,18 +14,14 @@ public class printAllPaths {
       }
    }
 
-   public static void printAllPaths(ArrayList<Edge>[] graph , int src , int dest , boolean[] visited , String psf){
-      if(src == dest){
-         System.out.println(psf);
-         return;
-      }
+   public static void drawTreeAndGetComponent(ArrayList<Edge>[] graph , int src , boolean[] visited , ArrayList<Integer> comp){
       visited[src] = true;
+      comp.add(src);
       for(Edge edge : graph[src]){
          if(visited[edge.nbr] == false){
-            printAllPaths(graph , edge.nbr , dest , visited , psf + edge.nbr);
+            drawTreeAndGetComponent(graph , edge.nbr , visited , comp);
          }
       }
-      visited[src] = false;
    }
 
    public static void main(String[] args) throws Exception {
@@ -47,13 +43,20 @@ public class printAllPaths {
          graph[v2].add(new Edge(v2, v1, wt));
       }
 
-      int src = Integer.parseInt(br.readLine());
-      int dest = Integer.parseInt(br.readLine());
-
       boolean[] visited = new boolean[vtces];
+      ArrayList<ArrayList<Integer>> comps = new ArrayList<>();
 
-      printAllPaths(graph , src , dest , visited , src + "");
-   }
-
-
+      for(int v = 0 ; v < vtces ; v++){
+         if(visited[v] == false){
+            ArrayList<Integer> comp = new ArrayList<Integer>();
+            drawTreeAndGetComponent(graph , v , visited , comp);
+            comps.add(comp);
+         }
+      }
+      if(comps.size() == 1){
+         System.out.println("true");
+      }else{
+         System.out.println("false");
+      }
+  }
 }
